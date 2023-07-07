@@ -21,7 +21,7 @@ class Database:
     def set_gender(self, chat_id, gender):
         with self.connection:
             user = self.cursor.execute("SELECT * FROM `users` WHERE `chat_id` = ?", (chat_id,)).fetchmany(1)
-            if bool(len(user)) == False:
+            if not bool(len(user)):
                 self.cursor.execute("INSERT INTO `users` (`chat_id`, `gender`) VALUES (?,?)", (chat_id, gender))
                 return True
             else:

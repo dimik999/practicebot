@@ -112,7 +112,7 @@ def bot_message(message):
             chat_info = db.get_active_chat(message.chat.id)
             if chat_info:
                 if message.from_user.username:
-                    bot.send_message(chat_info[1], '@' + message.from_user.username)
+                    bot.send_message(chat_info[1], 'Профиль собеседника @' + message.from_user.username)
                     bot.send_message(message.chat.id, 'Вы сказали свой профиль')
                 else:
                     bot.send_message(chat_info[1], 'Вы не указали свой username')
@@ -130,19 +130,19 @@ def bot_message(message):
                 bot.send_message(message.chat.id, 'Вы уже указали ваш пол. Обратитесь в поддержку @ybicanatinkere')
 
         else:
-            if not db.get_active_chat(message.chat.id):
+            if db.get_active_chat(message.chat.id):
                 chat_info = db.get_active_chat(message.chat.id)
                 bot.send_message(chat_info[1], message.text)
 
 
-@bot.message_handler(content_types=['stickers'])
+@bot.message_handler(content_types=['sticker'])
 def bot_stickers(message):
     if message.chat.type == 'private':
         chat_info = db.get_active_chat(message.chat.id)
         if chat_info:
             bot.send_sticker(chat_info[1], message.sticker.file_id)
         else:
-            bot.send_message(message.chat.id, 'Вы не начали диалог')
+            bot.send_message(message.chat.id, '❌Вы не начали диалог')
 
 @bot.message_handler(content_types=['voice'])
 def bot_voice(message):
@@ -151,7 +151,34 @@ def bot_voice(message):
         if chat_info:
             bot.send_voice(chat_info[1], message.voice.file_id)
         else:
-            bot.send_message(message.chat.id, 'Вы не начали диалог')
+            bot.send_message(message.chat.id, '❌Вы не начали диалог')
+
+@bot.message_handler(content_types=['photo'])
+def bot_photo(message):
+    if message.chat.type == 'private':
+        chat_info = db.get_active_chat(message.chat.id)
+        if chat_info:
+            bot.send_photo(chat_info[1], message.photo[-1].file_id)
+        else:
+            bot.send_message(message.chat.id, '❌ Вы не начали диалог!')
+
+@bot.message_handler(content_types=['video'])
+def bot_video(message):
+    if message.chat.type == 'private':
+        chat_info = db.get_active_chat(message.chat.id)
+        if chat_info:
+            bot.send_video(chat_info[1], message.video.file_id)
+        else:
+            bot.send_message(message.chat.id, '❌ Вы не начали диалог!')
+
+@bot.message_handler(content_types=['video_note'])
+def bot_video_note(message):
+    if message.chat.type == 'private':
+        chat_info = db.get_active_chat(message.chat.id)
+        if chat_info:
+            bot.send_video_note(chat_info[1], message.video_note.file_id)
+        else:
+            bot.send_message(message.chat.id, '❌ Вы не начали диалог!')
 
 
 bot.polling(none_stop=True)
